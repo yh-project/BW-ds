@@ -1,0 +1,22 @@
+name: "Deploy Storybook"
+
+on:
+    push:
+        branches: main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            # stage : ssh
+            - name: Stage 1. ssh
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  password: ${{ secrets.SSH_PASSWORD }}
+                  script: |
+                      cd ./Develop/BW-ds
+                      git pull origin main
+                      npm install
+                      npm run storybook -- --ci
