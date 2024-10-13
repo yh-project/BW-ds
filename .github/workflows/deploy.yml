@@ -1,0 +1,40 @@
+name: "Deploy Storybook"
+
+on:
+    push:
+        branches: main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            # stage : checkout
+            - name: Stage 1. checkout code
+              uses: actions/checkout@v3
+
+            # stage : ssh
+            - name: Stage 2. ssh
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  password: ${{ secrets.SSH_PASSWORD }}
+                  script: |
+                      # 6006 포트 pid 중단
+                      PID=$(lsof -t -i:6006)
+                      if [ -n "$PID" ]; then
+                        kill -9 $PID
+                      fi
+
+                      # 프로젝트 디렉토리 이동
+                      cd ./Develop/BW-ds
+
+                      # main 브랜치 최신화
+                      git checkout main
+                      git pull origin main
+
+                      # 패키지 설치
+                      npm install
+
+                      # 스토리북 실행
+                      nohup npm run storybook -- --ci &
