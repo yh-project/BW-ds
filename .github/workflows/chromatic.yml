@@ -14,7 +14,7 @@ jobs:
             - name: CD
               run: |
                   cd ./bw-ds
-                  echo ls -al
+                  ls -al
 
             # Deploy
             - name: Deploy
