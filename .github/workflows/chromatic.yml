@@ -3,10 +3,28 @@ name: "Chromatic Deployment"
 on: push
 
 jobs:
-    cicd:
+    deploy:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v1
-            - uses: chromaui/action@v1
+            # Checkout
+            - name: Checkout
+              uses: actions/checkout@v1
+
+            # Change Directory
+            - name: CD
+              run: |
+                  cd ./bw-ds
+
+            # Deploy
+            - name: Deploy
+              uses: chromaui/action@v1
               with:
                   projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
+            # Message
+            - name: Comment PR
+              uses: thollander/actions-comment-pull-request@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.PERSONNAL_TOKEN }}
+              with:
+                  message: "storybook deploy: ${{ steps.chromatic.outputs.storybookUrl}}"
