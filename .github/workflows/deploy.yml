@@ -30,11 +30,16 @@ jobs:
                       cd ./Develop/BW-ds
 
                       # main 브랜치 최신화
-                      git checkout main
                       git pull origin main
 
                       # 패키지 설치
                       npm install
 
-                      # 스토리북 실행
-                      nohup npm run storybook -- --ci &
+                      # 스토리북 빌드
+                      npm run build-storybook
+
+                      # 폴더 복사
+                      sudo cp -r ~/Develop/BW-ds/storybook-static /var/www/storybook-static
+
+                      # nginx restart
+                      sudo systemctl restart nginx
