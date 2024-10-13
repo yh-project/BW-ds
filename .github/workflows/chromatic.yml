@@ -10,12 +10,6 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v1
 
-            # Change Directory
-            - name: CD
-              run: |
-                  cd ./bw-ds
-                  ls -al
-
             # Deploy
             - name: Deploy
               uses: chromaui/action@v1
